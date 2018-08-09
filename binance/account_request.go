@@ -10,6 +10,67 @@ import (
 	"errors"
 )
 
+type StopLimitOrder struct {
+	Symbol             string
+	Side               string
+	Type               string
+	Quantity           float64
+	QuantityPrecision  int
+	StopPrice          float64
+	StopPricePrecision int
+	RecvWindow         int64
+	TimeInForce 		string
+	Price       		float64
+}
+
+func (m *StopLimitOrder) ValidateStopLimitOrder() error {
+	switch {
+	case len(m.Symbol) == 0:
+		return errors.New("Order must contain a symbol")
+	case !OrderTIFEnum[m.TimeInForce]:
+		return errors.New("Invalid or empty order timeInForce")
+	case m.Price <= 0.0:
+		return errors.New("Invalid or empty order price")
+	case !OrderSideEnum[m.Side]:
+		return errors.New("Invalid or empty order side")
+	case m.Quantity <= 0.0:
+		return errors.New("Invalid or empty order quantity")
+	case m.RecvWindow == 0:
+		m.RecvWindow = 5000
+		return nil
+	default:
+		return nil
+	}
+}
+
+
+type StopOrder struct {
+	Symbol             string
+	Side               string
+	Type               string
+	Quantity           float64
+	QuantityPrecision  int
+	StopPrice          float64
+	StopPricePrecision int
+	RecvWindow         int64
+}
+
+func (m *StopOrder) ValidateStopOrder() error {
+	switch {
+	case len(m.Symbol) == 0:
+		return errors.New("Order must contain a symbol")
+	case !OrderSideEnum[m.Side]:
+		return errors.New("Invalid or empty order side")
+	case m.Quantity <= 0.0:
+		return errors.New("Invalid or empty order quantity")
+	case m.RecvWindow == 0:
+		m.RecvWindow = 5000
+		return nil
+	default:
+		return nil
+	}
+}
+
 // Input for: POST /api/v3/order
 type LimitOrder struct {
 	Symbol      string

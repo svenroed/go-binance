@@ -47,6 +47,36 @@ func (b *Binance) GetPositions() (positions []Balance, err error) {
 	return positions[:i], nil
 }
 
+// Place a Stop Loss Order
+func (b *Binance) PlaceStopLimitOrder(s StopLimitOrder) (res PlacedOrder, err error) {
+	err = s.ValidateStopLimitOrder()
+	if err != nil {
+		return
+	}
+	fmtString := fmt.Sprintf("api/v3/order?symbol=%%s&side=%%s&type=%%s&quantity=%%.%df&stopPrice=%%.%df&recvWindow=%%d&price=%.8f&timeInForce=%s", s.QuantityPrecision, s.StopPricePrecision)
+	reqUrl := fmt.Sprintf(fmtString, s.Symbol, s.Side, s.Type, s.Quantity, s.StopPrice, s.RecvWindow, s.Price, s.TimeInForce)
+	_, err = b.client.do("POST", reqUrl, "", true, &res)
+	if err != nil {
+		return
+	}
+	return
+}
+
+// Place a Stop Loss Order
+func (b *Binance) PlaceStopOrder(s StopOrder) (res PlacedOrder, err error) {
+	err = s.ValidateStopOrder()
+	if err != nil {
+		return
+	}
+	fmtString := fmt.Sprintf("api/v3/order?symbol=%%s&side=%%s&type=%%s&quantity=%%.%df&stopPrice=%%.%df&recvWindow=%%d", s.QuantityPrecision, s.StopPricePrecision)
+	reqUrl := fmt.Sprintf(fmtString, s.Symbol, s.Side, s.Type, s.Quantity, s.StopPrice, s.RecvWindow)
+	_, err = b.client.do("POST", reqUrl, "", true, &res)
+	if err != nil {
+		return
+	}
+	return
+}
+
 // Place a Limit Order
 func (b *Binance) PlaceLimitOrder(l LimitOrder) (res PlacedOrder, err error) {
 

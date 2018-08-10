@@ -53,7 +53,7 @@ func (b *Binance) PlaceStopLimitOrder(s StopLimitOrder) (res PlacedOrder, err er
 	if err != nil {
 		return
 	}
-	fmtString := fmt.Sprintf("api/v3/order?symbol=%%s&side=%%s&type=%%s&quantity=%%.%df&stopPrice=%%.%df&recvWindow=%%d&price=%.8f&timeInForce=%s", s.QuantityPrecision, s.StopPricePrecision)
+	fmtString := fmt.Sprintf("api/v3/order?symbol=%s&side=%s&type=%s&quantity=%f&stopPrice=%.8f&recvWindow=%d&price=%.8f&timeInForce=%s", s.QuantityPrecision, s.StopPricePrecision)
 	reqUrl := fmt.Sprintf(fmtString, s.Symbol, s.Side, s.Type, s.Quantity, s.StopPrice, s.RecvWindow, s.Price, s.TimeInForce)
 	_, err = b.client.do("POST", reqUrl, "", true, &res)
 	if err != nil {
@@ -68,7 +68,7 @@ func (b *Binance) PlaceStopOrder(s StopOrder) (res PlacedOrder, err error) {
 	if err != nil {
 		return
 	}
-	fmtString := fmt.Sprintf("api/v3/order?symbol=%%s&side=%%s&type=%%s&quantity=%%.%df&stopPrice=%%.%df&recvWindow=%%d", s.QuantityPrecision, s.StopPricePrecision)
+	fmtString := fmt.Sprintf("api/v3/order?symbol=%s&side=%s&type=%s&quantity=%f&stopPrice=%f&recvWindow=%d", s.QuantityPrecision, s.StopPricePrecision)
 	reqUrl := fmt.Sprintf(fmtString, s.Symbol, s.Side, s.Type, s.Quantity, s.StopPrice, s.RecvWindow)
 	_, err = b.client.do("POST", reqUrl, "", true, &res)
 	if err != nil {
